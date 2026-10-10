@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lili - Rastreamento Nutricional</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+
+  <header role="banner" aria-label="Cabeçalho do Lili">
+    <h1>Lili</h1>
+    <p>Rastreamento nutricional acessível</p>
+  </header>
+
+  <nav aria-label="Menu de navegação" role="navigation">
+    <ul>
+      <li><a href="#registro">Novo registro</a></li>
+      <li><a href="#historico">Histórico</a></li>
+      <li><a href="#metas">Metas</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content" role="main">
+    <section id="registro" aria-labelledby="registro-titulo">
+      <h2 id="registro-titulo">Novo registro de refeição</h2>
+      <form id="food-form">
+        <label for="alimento">Alimento:</label>
+        <input type="text" id="alimento" name="alimento" required aria-describedby="alimento-dica">
+        <small id="alimento-dica" class="sr-only">Ex: arroz, feijão, frango</small>
+
+        <label for="calorias">Calorias (kcal):</label>
+        <input type="number" id="calorias" name="calorias" min="0" required aria-describedby="calorias-dica">
+        <small id="calorias-dica" class="sr-only">Digite o valor calórico</small>
+
+        <label for="proteinas">Proteínas (g):</label>
+        <input type="number" step="0.1" id="proteinas" name="proteinas" min="0" required aria-describedby="proteinas-dica">
+        <small id="proteinas-dica" class="sr-only">Digite gramas de proteína</small>
+
+        <label for="carboidratos">Carboidratos (g):</label>
+        <input type="number" step="0.1" id="carboidratos" name="carboidratos" min="0" required aria-describedby="carboidratos-dica">
+        <small id="carboidratos-dica" class="sr-only">Digite gramas de carboidrato</small>
+
+        <label for="gorduras">Gorduras (g):</label>
+        <input type="number" step="0.1" id="gorduras" name="gorduras" min="0" required aria-describedby="gorduras-dica">
+        <small id="gorduras-dica" class="sr-only">Digite gramas de gordura</small>
+
+        <button type="submit" aria-label="Adicionar refeição">Adicionar</button>
+      </form>
+    </section>
+
+    <section id="historico" aria-labelledby="historico-titulo">
+      <h2 id="historico-titulo">Histórico de refeições</h2>
+      <table aria-label="Tabela de histórico nutricional">
+        <caption>Refeições registradas</caption>
+        <thead>
+          <tr>
+            <th>Alimento</th>
+            <th>Calorias</th>
+            <th>Proteínas</th>
+            <th>Carboidratos</th>
+            <th>Gorduras</th>
+            <th>Ação</th>
+          </tr>
+        </thead>
+        <tbody id="food-list">
+          <!-- Itens serão inseridos via JavaScript -->
+        </tbody>
+      </table>
+    </section>
+
+    <section id="metas" aria-labelledby="metas-titulo">
+      <h2 id="metas-titulo">Metas diárias</h2>
+      <dl>
+        <dt>Calorias objetivo</dt>
+        <dd id="meta-calorias">2000 kcal</dd>
+        <dt>Proteínas objetivo</dt>
+        <dd id="meta-proteinas">50 g</dd>
+        <dt>Carboidratos objetivo</dt>
+        <dd id="meta-carboidratos">250 g</dd>
+        <dt>Gorduras objetivo</dt>
+        <dd id="meta-gorduras">70 g</dd>
+      </dl>
+    </section>
+  </main>
+
+  <footer role="contentinfo" aria-label="Rodapé do Lili">
+    <p>&copy; 2025 Lili - Projeto Lili</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
