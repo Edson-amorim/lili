@@ -17,6 +17,13 @@ const metaGorduras = document.getElementById('meta-gorduras');
 // Estado das refeições
 let refeicoes = [];
 
+// Persistência usando localStorage
+const LOCAL_STORAGE_KEY = 'refeicoes_lili';
+const dadosSalvos = localStorage.getItem(LOCAL_STORAGE_KEY);
+if (dadosSalvos) {
+  refeicoes = JSON.parse(dadosSalvos);
+}
+
 // Função para formatar número com vírgula
 function formatarNumero(num) {
   return Number(num).toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -47,6 +54,7 @@ function adicionarRefeicao(event) {
   };
 
   refeicoes.push(refeicao);
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(refeicoes));
   renderizarRefeicoes();
   foodForm.reset();
 
@@ -57,6 +65,7 @@ function adicionarRefeicao(event) {
 // Função para remover refeição
 function removerRefeicao(id) {
   refeicoes = refeicoes.filter(r => r.id !== id);
+  localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(refeicoes));
   renderizarRefeicoes();
 }
 
@@ -116,6 +125,27 @@ function atualizarProgressoMeta(caloriasConsumidas, proteinasConsumidas, carboid
   // Atualizar barras (elementos que você pode adicionar no HTML se quiser)
   // Aqui apenas log para exemplo
   console.log(`Progresso: ${pcCalorias}% calorias, ${pcProteinas}% proteínas, ${pcCarboidratos}% carboidratos, ${pcGorduras}% gorduras`);
+}
+
+function salvarProjeto() {
+  const dados = {
+    metas,
+    refeicoes: refeicoes.map(r => ({
+      id: r.id,
+      alimento: r.alimento,
+      calorias: r.calorias,
+      proteinas: r.proteinass,
+      carboidratos: r.carboidratos,
+      gorduras: r.gorduras
+    }))
+  };
+  const blob = new Blob([JSON.stringify(dados, null, 2)], { type: 'application/json;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'lili_projeto.json';
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // Escutar envio do formulário
