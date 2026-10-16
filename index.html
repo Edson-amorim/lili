@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lili - Rastreamento Nutricional</title>
+  <title>Lili - Sistema Nutricional com Tabela NEPA/TACO</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -11,76 +11,150 @@
 
   <header role="banner" aria-label="Cabeçalho do Lili">
     <h1>Lili</h1>
-    <p>Rastreamento nutricional acessível</p>
+    <p>Sistema de Rastreamento e Consulta Nutricional Acessível — Base NEPA/UNICAMP (Tabela TACO)</p>
   </header>
 
   <nav aria-label="Menu de navegação" role="navigation">
     <ul>
-      <li><a href="#registro">Novo registro</a></li>
-      <li><a href="#historico">Histórico</a></li>
-      <li><a href="#metas">Metas</a></li>
+      <li><a href="#registro">Novo registro e Consulta NEPA</a></li>
+      <li><a href="#ficha-completa">Ficha Nutricional Completa</a></li>
+      <li><a href="#historico">Histórico da Refeição</a></li>
+      <li><a href="#metas">Metas Diárias</a></li>
     </ul>
   </nav>
 
   <main id="main-content" role="main">
     <section id="registro" aria-labelledby="registro-titulo">
-      <h2 id="registro-titulo">Novo registro de refeição</h2>
+      <h2 id="registro-titulo">Consulta NEPA e Novo Registro de Alimento</h2>
+      <p id="status-banco" aria-live="polite">Carregando banco de dados NEPA/TACO...</p>
+
       <form id="food-form">
-        <label for="alimento">Alimento:</label>
-        <input type="text" id="alimento" name="alimento" required aria-describedby="alimento-dica">
-        <small id="alimento-dica" class="sr-only">Ex: arroz, feijão, frango</small>
+        <div class="campo-grupo">
+          <label for="filtro-categoria">Filtrar por categoria (opcional):</label>
+          <select id="filtro-categoria" name="filtro-categoria" aria-describedby="categoria-dica">
+            <option value="">Todas as categorias (597 alimentos)</option>
+          </select>
+          <small id="categoria-dica" class="sr-only">Selecione uma categoria para filtrar os alimentos da tabela NEPA</small>
+        </div>
 
-        <label for="calorias">Calorias (kcal):</label>
-        <input type="number" id="calorias" name="calorias" min="0" required aria-describedby="calorias-dica">
-        <small id="calorias-dica" class="sr-only">Digite o valor calórico</small>
+        <div class="campo-grupo">
+          <label for="alimento">Digite ou pesquise o alimento (Tabela NEPA):</label>
+          <input type="text" id="alimento" name="alimento" list="lista-alimentos-nepa" autocomplete="off" required aria-describedby="alimento-dica" placeholder="Ex: arroz cozido, frango grelhado, feijão...">
+          <datalist id="lista-alimentos-nepa"></datalist>
+          <small id="alimento-dica" class="sr-only">Digite o nome do alimento. O sistema buscará automaticamente todos os dados nutricionais na Tabela NEPA.</small>
+        </div>
 
-        <label for="proteinas">Proteínas (g):</label>
-        <input type="number" step="0.1" id="proteinas" name="proteinas" min="0" required aria-describedby="proteinas-dica">
-        <small id="proteinas-dica" class="sr-only">Digite gramas de proteína</small>
+        <div class="campo-grupo">
+          <label for="selecao-nepa">Alimentos encontrados na Tabela NEPA (<span id="contador-resultados">597</span>):</label>
+          <select id="selecao-nepa" name="selecao-nepa" aria-describedby="selecao-nepa-dica">
+            <option value="">-- Selecione um alimento da lista para preencher tudo automaticamente --</option>
+          </select>
+          <small id="selecao-nepa-dica" class="sr-only">Use as setas para escolher o alimento exato da Tabela NEPA e preencher todos os nutrientes automaticamente</small>
+        </div>
 
-        <label for="carboidratos">Carboidratos (g):</label>
-        <input type="number" step="0.1" id="carboidratos" name="carboidratos" min="0" required aria-describedby="carboidratos-dica">
-        <small id="carboidratos-dica" class="sr-only">Digite gramas de carboidrato</small>
+        <div class="campo-grupo">
+          <label for="quantidade">Quantidade / Porção (gramas):</label>
+          <input type="number" step="1" id="quantidade" name="quantidade" min="1" value="100" required aria-describedby="quantidade-dica">
+          <small id="quantidade-dica" class="sr-only">Porção padrão de 100 gramas. Ao alterar a quantidade, todos os nutrientes são recalculados automaticamente.</small>
+        </div>
 
-        <label for="gorduras">Gorduras (g):</label>
-        <input type="number" step="0.1" id="gorduras" name="gorduras" min="0" required aria-describedby="gorduras-dica">
-        <small id="gorduras-dica" class="sr-only">Digite gramas de gordura</small>
+        <div id="anuncio-alimento" class="status-anuncio" aria-live="polite" role="status">
+          Informe ou selecione um alimento acima para preencher automaticamente todos os dados nutricionais.
+        </div>
 
-        <button type="submit" aria-label="Adicionar refeição">Adicionar</button>
+        <div class="campo-grupo">
+          <label for="calorias">Calorias (kcal):</label>
+          <input type="number" step="0.1" id="calorias" name="calorias" min="0" required aria-describedby="calorias-dica">
+          <small id="calorias-dica" class="sr-only">Valor calórico preenchido automaticamente pela tabela NEPA</small>
+        </div>
+
+        <div class="campo-grupo">
+          <label for="proteinas">Proteínas (g):</label>
+          <input type="number" step="0.1" id="proteinas" name="proteinas" min="0" required aria-describedby="proteinas-dica">
+          <small id="proteinas-dica" class="sr-only">Gramas de proteína preenchidas automaticamente</small>
+        </div>
+
+        <div class="campo-grupo">
+          <label for="carboidratos">Carboidratos (g):</label>
+          <input type="number" step="0.1" id="carboidratos" name="carboidratos" min="0" required aria-describedby="carboidratos-dica">
+          <small id="carboidratos-dica" class="sr-only">Gramas de carboidrato preenchidas automaticamente</small>
+        </div>
+
+        <div class="campo-grupo">
+          <label for="gorduras">Gorduras / Lipídeos (g):</label>
+          <input type="number" step="0.1" id="gorduras" name="gorduras" min="0" required aria-describedby="gorduras-dica">
+          <small id="gorduras-dica" class="sr-only">Gramas de gordura preenchidas automaticamente</small>
+        </div>
+
+        <div class="campo-grupo">
+          <label for="fibras">Fibras Alimentares (g):</label>
+          <input type="number" step="0.1" id="fibras" name="fibras" min="0" value="0" aria-describedby="fibras-dica">
+          <small id="fibras-dica" class="sr-only">Gramas de fibra alimentar preenchidas automaticamente</small>
+        </div>
+
+        <div class="campo-grupo">
+          <label for="sodio">Sódio (mg):</label>
+          <input type="number" step="0.1" id="sodio" name="sodio" min="0" value="0" aria-describedby="sodio-dica">
+          <small id="sodio-dica" class="sr-only">Miligramas de sódio preenchidas automaticamente</small>
+        </div>
+
+        <div class="campo-grupo">
+          <label for="calcio">Cálcio (mg):</label>
+          <input type="number" step="0.1" id="calcio" name="calcio" min="0" value="0" aria-describedby="calcio-dica">
+          <small id="calcio-dica" class="sr-only">Miligramas de cálcio preenchidas automaticamente</small>
+        </div>
+
+        <div class="campo-grupo">
+          <label for="ferro">Ferro (mg):</label>
+          <input type="number" step="0.01" id="ferro" name="ferro" min="0" value="0" aria-describedby="ferro-dica">
+          <small id="ferro-dica" class="sr-only">Miligramas de ferro preenchidas automaticamente</small>
+        </div>
+
+        <button type="submit" aria-label="Adicionar alimento ao plano/histórico">Adicionar à refeição</button>
       </form>
-    <div>
-      <button id="exportar" aria-label="Exportar dados para arquivo de texto" onclick="exportarTexto();">Exportar para arquivo de texto</button>
-    </div>
-    <div>
-      <button id="backup" aria-label="Fazer backup dos dados para um arquivo de texto" onclick="fazerBackup();">Fazer backup</button>
-    </div>
-    <div>
-      <button id="salvar-projeto" aria-label="Salvar projeto completo em arquivo JSON" onclick="salvarProjeto();">Salvar projeto</button>
-    </div>
+
+      <div class="acoes-projeto" role="group" aria-label="Ações de exportação e salvamento">
+        <button type="button" id="exportar" aria-label="Exportar dados para arquivo de texto" onclick="exportarTexto();">Exportar para arquivo de texto</button>
+        <button type="button" id="backup" aria-label="Fazer backup dos dados para um arquivo de texto" onclick="fazerBackup();">Fazer backup</button>
+        <button type="button" id="salvar-projeto" aria-label="Salvar projeto completo em arquivo JSON" onclick="salvarProjeto();">Salvar projeto</button>
+      </div>
+    </section>
+
+    <section id="ficha-completa" aria-labelledby="ficha-titulo">
+      <h2 id="ficha-titulo">Ficha Nutricional Completa do Alimento (NEPA/UNICAMP)</h2>
+      <div id="ficha-conteudo" aria-live="polite">
+        <p>Selecione ou digite um alimento no campo de busca acima para visualizar todos os macronutrientes, minerais, vitaminas e frações lipídicas detalhadas.</p>
+      </div>
     </section>
 
     <section id="historico" aria-labelledby="historico-titulo">
-      <h2 id="historico-titulo">Histórico de refeições</h2>
+      <h2 id="historico-titulo">Histórico de Refeições Registradas</h2>
       <table aria-label="Tabela de histórico nutricional">
-        <caption>Refeições registradas</caption>
+        <caption>Alimentos registrados e totais acumulados</caption>
         <thead>
           <tr>
             <th>Alimento</th>
+            <th>Porção (g)</th>
             <th>Calorias</th>
             <th>Proteínas</th>
             <th>Carboidratos</th>
             <th>Gorduras</th>
+            <th>Fibras</th>
+            <th>Sódio</th>
             <th>Ação</th>
           </tr>
         </thead>
         <tbody id="food-list">
           <!-- Itens serão inseridos via JavaScript -->
         </tbody>
+        <tfoot id="food-totals">
+          <!-- Totais serão inseridos via JavaScript -->
+        </tfoot>
       </table>
     </section>
 
     <section id="metas" aria-labelledby="metas-titulo">
-      <h2 id="metas-titulo">Metas diárias</h2>
+      <h2 id="metas-titulo">Metas Diárias e Acompanhamento</h2>
       <dl>
         <dt>Calorias objetivo</dt>
         <dd id="meta-calorias">2000 kcal</dd>
@@ -90,14 +164,19 @@
         <dd id="meta-carboidratos">250 g</dd>
         <dt>Gorduras objetivo</dt>
         <dd id="meta-gorduras">70 g</dd>
+        <dt>Fibras objetivo</dt>
+        <dd id="meta-fibras">25 g</dd>
+        <dt>Sódio limite máximo</dt>
+        <dd id="meta-sodio">2000 mg</dd>
       </dl>
     </section>
   </main>
 
   <footer role="contentinfo" aria-label="Rodapé do Lili">
-    <p>&copy; 2025 Lili - Projeto Lili</p>
+    <p>&copy; 2026 Lili - Projeto Lili | Banco de Dados Tabela TACO / NEPA-UNICAMP (597 alimentos tratados)</p>
   </footer>
 
+  <script src="banco_alimentos.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
